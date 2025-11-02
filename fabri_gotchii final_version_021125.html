@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FABRI_GOTCHI <3 — Final Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+/* ————————————————————
+   ESTÉTICA GENERAL
+———————————————————— */
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: linear-gradient(to bottom,
+    #5c53a5 0%, #ab5b9e 25%, #dc6f8e 50%, #f59581 75%, #fabc82 100%);
+  background-attachment: fixed;
+  color: #fff6fb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+canvas#sparkles {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1 {
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  color: #fff8fb;
+  text-shadow: 0 0 6px #ffd1e4, 0 0 12px #ff93cc;
+  z-index: 2;
+}
+
+.game {
+  background: #ffffff;
+  border: 4px solid #ffb3df;
+  border-radius: 20px;
+  width: 320px;
+  padding: 25px 15px 15px 15px; /* reduje padding inferior */
+  text-align: center;
+  box-shadow: 0 0 25px rgba(255,175,225,0.6);
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  min-height: 460px; /* antes 500px — ajustado */
+}
+
+/* ✨ Stickers decorativos */
+.sticker {
+  position: absolute;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 6px rgba(255, 190, 240, 0.9));
+  z-index: 5;
+  animation: floaty 4s ease-in-out infinite, sparkle 3s infinite alternate;
+}
+
+/* Posiciones ajustadas */
+.sticker-top-left { top: 15px; left: -25px; width: 75px; }
+.sticker-top-right { top: -12px; right: -20px; width: 50px; }
+.sticker-bottom-left { bottom: 30px; left: -25px; width: 70px; }
+.sticker-bottom-right { bottom: -12px; right: -15px; width: 65px; }
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+}
+@keyframes sparkle {
+  0% { opacity: 0.8; filter: drop-shadow(0 0 5px rgba(255, 200, 250, 0.6)); }
+  100% { opacity: 1; filter: drop-shadow(0 0 10px rgba(255, 240, 255, 1)); }
+}
+
+/* 🌸 GIF fijo al nivel del sprite */
+.floating-gif {
+  position: absolute;
+  top: 175px; /* sigue cerca del sprite */
+  right: 65px; /* movido más a la izquierda */
+  width: 60px;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 6px rgba(255, 190, 250, 0.9));
+  z-index: 4;
+}
+
+/* SPRITE Y BURBUJA */
+.sprite-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0 0 0;
+  height: 230px;
+  width: 100%;
+}
+
+.sprite {
+  width: 180px; /* antes 150px — más grande */
+  height: 180px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  background-color: #fff;
+  display: block;
+  margin: 0 auto;
+}
+
+.speech-bubble {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffe3f3;
+  border: 2px solid #ffb8ec;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 8px;
+  color: #7d4b86;
+  width: max-content;
+  max-width: 200px;
+  box-shadow: 2px 2px 0 #ffb8ec;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  text-align: center;
+  line-height: 1.4;
+  z-index: 3;
+}
+
+.speech-bubble.visible { opacity: 1; }
+
+/* Ajuste en barras para acercarlas más */
+.bars {
+  margin-top: 5px; /* antes 15px */
+}
+
+.bar { margin: 6px 0; }
+.label { font-size: 8px; margin-bottom: 3px; color: #ff5cb6; }
+
+.progress {
+  width: 80%;
+  height: 6px;
+  background: #ffe5f3;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid #ffc2e2;
+  margin: 0 auto;
+}
+.fill { height: 100%; transition: width 0.3s; }
+
+.buttons { margin-top: 20px; }
+.buttons button {
+  font-family: 'Press Start 2P', cursive;
+  background: #ff9fe0;
+  border: 3px solid #e86cc7;
+  box-shadow: inset 2px 2px 0 #ffd2ef,
+              inset -2px -2px 0 #b44b98,
+              2px 2px 0 #e86cc7;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 8px;
+  padding: 7px 10px;
+  margin: 6px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.buttons button:hover { transform: scale(1.05); }
+.buttons button:active {
+  box-shadow: inset -2px -2px 0 #ffd2ef,
+              inset 2px 2px 0 #b44b98;
+  transform: scale(0.97);
+}
+
+footer {
+  margin-top: 20px;
+  font-size: 8px;
+  color: #ffe0f4;
+  text-shadow: 0 0 5px #ff98d0;
+  z-index: 2;
+}
+</style>
+</head>
+
+<body>
+<canvas id="sparkles"></canvas>
+<h1>FABRI_GOTCHI &lt;3</h1>
+
+<div class="game">
+  <div class="sprite-container">
+    <img id="sprite" class="sprite" src="https://i.imgur.com/gflmLCp.gif" alt="fabri neutral">
+    <div id="speechBubble" class="speech-bubble"></div>
+  </div>
+
+  <div class="bars">
+    <div class="bar">
+      <div class="label">🍰 Hambre</div>
+      <div class="progress"><div id="hunger" class="fill" style="background:#ff8ac4;width:85%"></div></div>
+    </div>
+    <div class="bar">
+      <div class="label">🌙 Energía</div>
+      <div class="progress"><div id="energy" class="fill" style="background:#ffb8ec;width:90%"></div></div>
+    </div>
+    <div class="bar">
+      <div class="label">💖 Cariño</div>
+      <div class="progress"><div id="love" class="fill" style="background:#ffc2a6;width:80%"></div></div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="feed()">🍓 Alimentar</button>
+    <button onclick="sleep()">🌙 Dormir</button>
+    <button onclick="hug()">💞 Mimos</button>
+  </div>
+
+  <!-- 🌸 Stickers decorativos -->
+  <img class="sticker sticker-top-left" src="https://i.imgur.com/mq5b0Dn.png" alt="sticker 1">
+  <img class="sticker sticker-top-right" src="https://i.imgur.com/anOpm81.png" alt="sticker 2">
+  <img class="sticker sticker-bottom-left" src="https://i.imgur.com/dvkQmPp.png" alt="sticker 3">
+  <img class="sticker sticker-bottom-right" src="https://i.imgur.com/GLIdWSP.png" alt="sticker 4">
+
+  <!-- 🌟 GIF decorativo -->
+  <img class="floating-gif" src="https://i.imgur.com/toNRxXW.gif" alt="floating gif">
+</div>
+
+<footer>⊹ ₊ powered by amor y cafecito ₊ ⊹ ˖</footer>
+
+<script>
+/* ✨ partículas simples */
+const canvas = document.getElementById("sparkles");
+const ctx = canvas.getContext("2d");
+let w, h; const particles = [];
+const symbols = ["⊹", "₊⊹", "₊", "⭑"];
+function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+window.addEventListener("resize", resize); resize();
+for (let i = 0; i < 100; i++) {
+  particles.push({x: Math.random()*w, y: Math.random()*h,
+    size: Math.random()*12+6, dx:(Math.random()-0.5)*0.4, dy:(Math.random()-0.5)*0.4,
+    alpha: Math.random()*0.7+0.3, hue: Math.random()*30+330,
+    symbol: symbols[Math.floor(Math.random()*symbols.length)]
+  });
+}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  particles.forEach(p=>{
+    ctx.font=`${p.size}px 'Press Start 2P', cursive`;
+    ctx.fillStyle=`hsla(${p.hue},100%,80%,${p.alpha})`;
+    ctx.fillText(p.symbol,p.x,p.y);
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* 🎮 Lógica con estados */
+let hunger = 85, energy = 90, love = 80;
+const sprites = {
+  neutral: "https://i.imgur.com/gflmLCp.gif",
+  happy: "https://i.imgur.com/eVtjY4e.gif",
+  hugged: "https://i.imgur.com/hRdBkmC.gif",
+  eating: "https://i.imgur.com/s4XbyF8.gif",
+  sleeping: "https://i.imgur.com/vvrA8xB.gif",
+  sad: "https://i.imgur.com/BMj02Vt.gif"
+};
+const phrases = {
+  hungry: [
+    "me encanta tu comida!! 🍓",
+    "un besito para el postre 😏",
+    "esto está mejor que los dulces 😋",
+    "me alimentas el corazón y la pancita 💗",
+    "no sabía que el amor también se cocinaba 😚"
+  ],
+  sleepy: [
+    "hora de mimir, nanochesss 💤",
+    "te veo en mis sueños 💭",
+    "acurrúcate conmigo 🧸",
+    "modo ahorro de energía activado 💤",
+    "zzz… no me despiertes a menos que traigas mimos 🥱"
+  ],
+  lowLove: [
+    "¿dónde estáss? te extrañoo 😩",
+    "necesito mimitos 🆘 💞",
+    "abandonado andoo 😭",
+    "te extraño más que al wifi 🥺",
+    "solo un abrazo tuyo puede reiniciarme 😪"
+  ],
+  happy: [
+    "soy un tamagotchi con suerte 🥰🥰",
+    "*bailecito feliz 💃*",
+    "soy tu bug favorito 💫",
+    "te ganaste 10 puntos de cariño 💗",
+    "qué pixel tan guapo, ah soy yo 😎",
+    "mi corazoncito 8-bit late por ti 💓"
+  ]
+};
+
+function updateBars(){
+  document.getElementById('hunger').style.width=hunger+'%';
+  document.getElementById('energy').style.width=energy+'%';
+  document.getElementById('love').style.width=love+'%';
+}
+function showPhrase(type){
+  const bubble=document.getElementById('speechBubble');
+  const list=phrases[type];
+  if(!list)return;
+  bubble.textContent=list[Math.floor(Math.random()*list.length)];
+  bubble.classList.add('visible');
+  setTimeout(()=>bubble.classList.remove('visible'),3500);
+}
+function moodCheck(){
+  const sprite = document.getElementById('sprite');
+  const allHigh = hunger >= 90 && energy >= 90 && love >= 90;
+  const anyLow = hunger < 30 || energy < 30 || love < 30;
+
+  if (anyLow) {
+    sprite.src = sprites.sad;
+    showPhrase("lowLove");
+  } 
+  else if (allHigh) {
+    sprite.src = sprites.happy;
+    // muestra frase feliz solo cuando está en ese rango
+    if (Math.random() < 0.5) showPhrase("happy");
+  } 
+  else {
+    sprite.src = sprites.neutral;
+  }
+}
+function feed(){ hunger=Math.min(100,hunger+20); changeMood(sprites.eating); showPhrase("hungry"); }
+function sleep(){ energy=Math.min(100,energy+30); changeMood(sprites.sleeping); showPhrase("sleepy"); }
+function hug(){ love=Math.min(100,love+20); changeMood(sprites.hugged); showPhrase("happy"); }
+function changeMood(tempSprite){
+  const sprite=document.getElementById('sprite');
+  sprite.src=tempSprite;
+  setTimeout(moodCheck,5000);
+  updateBars();
+}
+function decayStats(){
+  hunger=Math.max(0,hunger-2);
+  energy=Math.max(0,energy-1);
+  love=Math.max(0,love-1.5);
+  updateBars();
+  moodCheck();
+}
+setInterval(decayStats,5000);
+updateBars();
+moodCheck();
+</script>
+</body>
+</html>
